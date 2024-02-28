@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted } from "vue"
+import { reactive, onMounted, watch } from "vue"
 import { collection, onSnapshot, doc, deleteDoc, writeBatch } from "firebase/firestore";
 import { db } from "@/firebase"
 
@@ -23,6 +23,19 @@ const data = reactive({
   selectedItems:[],
 })
 
+watch(
+  ()=>data.search,
+  ()=>{
+    getFilteredData();
+  }
+)
+
+watch(
+  ()=>data.selectedFilter,
+  ()=>{
+    getFilteredData();
+  }
+)
 
 const headers = [
     { title: 'Name', align: 'start', sortable: true, key: 'name' },
@@ -60,7 +73,6 @@ const getAllData=async()=>{
   onSnapshot(tasksRef, (querySnapshot)=>{
     data.items.splice(0)
     querySnapshot.forEach((task)=>{
-      console.log("task :", task.id, task.data())
       data.items.push(task.data());
     })
     
@@ -81,7 +93,7 @@ onMounted(async()=>{
       <v-card width="100%" class="pa-4 mb-4 d-flex align-center justify-space-around">
         <h5 class="text-h5 font-weight-medium">Tasks</h5>
         <div class="d-flex h-25 align-center justify-space-between w-75">
-          <v-text-field v-model="data.search" class="mb-4 mr-4" hide-details="auto" label="Search" prepend-inner-icon="mdi-magnify"
+          <v-text-field v-model="data.search" class="mb-4 mr-4" hide-details="auto" label="Search by name" prepend-inner-icon="mdi-magnify"
             variant="outlined"></v-text-field>
 
           <v-autocomplete label="Filter" class="mr-4" v-model="data.selectedFilter" :items="data.filterStatus" item-title="name"
