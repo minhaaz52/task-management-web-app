@@ -80,7 +80,7 @@ const submitForm = async () => {
             name: data.name,
             description: data.description,
             status: data.selectedStatus,
-            updatedOnOn: date.toString(),
+            updatedOn: date.toString(),
         })
         closeDialog();
         data.btnLoading=false;

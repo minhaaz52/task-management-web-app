@@ -108,6 +108,15 @@ const deleteItems = async () => {
   }
 }
 
+const deleteSingleItem=async(id)=>{
+  try{
+    const docRef=doc(db, "tasks", id)
+    await deleteDoc(docRef);
+
+  } catch(err){
+    alert("Something went wrong");
+  }
+}
 
 const editItem=(item)=>{
   data.selectedItem=item.id
@@ -170,6 +179,10 @@ const formatTime=(time)=>{
             <v-icon size="large" class="me-2" @click="editItem(item)">
               mdi-square-edit-outline
             </v-icon>
+
+            <v-icon size="large" class="me-2" color="red" @click="deleteSingleItem(item.id)">
+              mdi-trash-can-outline
+            </v-icon>
           </template>
 
           <template v-slot:item.status="{ item }">
@@ -177,11 +190,11 @@ const formatTime=(time)=>{
           </template>
 
           <template v-slot:item.createdOn="{ item }">
-            {{ formatTime(item.createdOn) }}
+            <v-chip> {{ formatTime(item.createdOn) }} </v-chip>
           </template>
 
           <template v-slot:item.updatedOn="{ item }">
-            {{ formatTime(item.updatedOn) }}
+            <v-chip> {{ formatTime(item.updatedOn) }} </v-chip>
           </template>
 
 
