@@ -1,16 +1,16 @@
 <script setup>
 import { ref, reactive } from "vue"
-import { doc, setDoc, collection, addDoc } from "firebase/firestore";
+import { doc, setDoc, collection } from "firebase/firestore";
 import { db } from "@/firebase"
 
 const data = reactive({
     statusItems: [
-        { name: "To Do", id: "toDo" },
-        { name: "In Progress", id: "inProgress" },
-        { name: "Done", id: "done" }
+        { name: "To Do", id: "To Do" },
+        { name: "In Progress", id: "In Progress" },
+        { name: "Done", id: "Done" }
     ],
 
-    selectedStatus: "toDo",
+    selectedStatus: "To Do",
     name: "",
     description: "",
     btnLoading: false,
@@ -51,6 +51,7 @@ const submitForm = async () => {
             updatedOn: "",
             id: docRef.id
         })
+        closeDialog();
         data.btnLoading=false;
     } catch(err){
         console.log(err);
