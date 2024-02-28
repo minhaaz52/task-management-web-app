@@ -24,11 +24,11 @@ const submitForm = () => {
                         type="email"></v-text-field>
                 </div>
                 <div class="w-100 px-2">
-                    <v-btn type="submit" variant="outlined" color="deep-purple-accent-4" class="w-100 pa-2 mb-4">
+                    <v-btn type="submit" variant="outlined" color="deep-purple-accent-4" class="w-100 pa-2 mb-4 rounded-xl">
                         Login
                     </v-btn>
 
-                    <v-btn @click="router.push('/signup')" variant="outlined" color="deep-purple-accent-4" class="w-100 mb-4">
+                    <v-btn @click="router.push('/signup')" variant="outlined" color="deep-purple-accent-4" class="w-100 mb-4 rounded-xl">
                         Create An Account
                     </v-btn>
                 </div>
