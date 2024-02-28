@@ -1,16 +1,62 @@
 <script setup>
-import { ref } from "vue"
+import { ref, reactive } from "vue"
+import { doc, setDoc, collection, addDoc } from "firebase/firestore";
+import { db } from "@/firebase"
+
+const data = reactive({
+    statusItems: [
+        { name: "To Do", id: "toDo" },
+        { name: "In Progress", id: "inProgress" },
+        { name: "Done", id: "done" }
+    ],
+
+    selectedStatus: "toDo",
+    name: "",
+    description: "",
+    btnLoading: false,
+})
 
 const createTaskForm = ref(null)
 
 const emits = defineEmits(['closeDialogEmit'])
 
+
+const nameRules = [v => !!v || 'Name is required']
+const descriptionRules = [v => !!v || 'Description is required']
+const statusRules = [v => !!v || "Status is required"]
+
+
 const closeDialog = () => {
     emits('closeDialogEmit')
 }
 
-const submitForm = () => {
-    console.log("submitted")
+const submitForm = async () => {
+    try{
+        data.btnLoading=true;
+        const validate = await createTaskForm.value.validate();
+
+        if (!validate.valid){
+            data.btnLoading=false;
+            return;
+        }
+
+        const date=new Date();
+        const taskRef=collection(db, "tasks");
+        const docRef=doc(taskRef)
+        await setDoc(docRef, {
+            name: data.name,
+            description: data.description,
+            status: data.selectedStatus,
+            createdOn: date.toString(),
+            updatedOn: "",
+            id: docRef.id
+        })
+        data.btnLoading=false;
+    } catch(err){
+        console.log(err);
+        data.btnLoading=false;
+        alert("Something went wrong");
+    }
 }
 
 </script>
@@ -24,16 +70,17 @@ const submitForm = () => {
                 <v-icon size="large">mdi-plus</v-icon>
                 <h4>Create Task</h4>
             </div>
-            <v-text-field class="mb-4 mr-4" hide-details="auto" label="Task Name"
+            <v-text-field v-model="data.name" class="mb-4 mr-4" required hide-details="auto" label="Task Name" :rules="nameRules"
                 variant="outlined"></v-text-field>
 
-            <v-text-field class="mb-4 mr-4" hide-details="auto" label="Task Description"
+            <v-text-field v-model="data.description" class="mb-4 mr-4" required hide-details="auto" label="Task Description" :rules="descriptionRules"
                 variant="outlined"></v-text-field>
 
-            <v-autocomplete label="Status" class="mr-4" item-title="name" item-value="id" variant="outlined"></v-autocomplete>
+            <v-autocomplete v-model="data.selectedStatus" label="Status" required class="mr-4" :items="data.statusItems"
+                item-title="name" item-value="id" :rules="statusRules" variant="outlined"></v-autocomplete>
 
             <div class="">
-                <v-btn type="submit" variant="outlined" color="deep-purple-accent-4" class="w-100 pa-2 mb-4 rounded-xl">
+                <v-btn :loading="data.btnLoading" type="submit" variant="outlined" color="deep-purple-accent-4" class="w-100 pa-2 mb-4 rounded-xl">
                     Create
                 </v-btn>
 

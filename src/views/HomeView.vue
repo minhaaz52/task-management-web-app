@@ -5,23 +5,28 @@ import CreateTask from "@/components/CreateTask.vue"
 
 const data = reactive({
   items: [
-    {
-      name: 'African Elephant',
-      species: 'Loxodonta africana',
-      diet: 'Herbivore',
-      habitat: 'Savanna, Forests',
-    },
+   
   ],
 
   filterItems: [
+    {name : "All", id: "all"},
     { name: "To Do", id: "toDo" },
     { name: "In Progress", id: "inProgress" },
     { name: "Done", id: "done" }
   ],
 
+  selectedFilter: "all",
   dialog: true,
-
 })
+
+
+const headers = [
+    { title: 'Business Name', align: 'start', sortable: false, key: 'businessName' },
+    { title: 'VAT Number', align: 'center', sortable: false, key: 'vatNumber' },
+    { title: 'Status', align: 'center', sortable: false, key: 'status' },
+    { title: 'File Return', align: 'center', sortable: false, key: 'fileReturn' },
+    { title: 'Actions', align: 'center', key: 'actions', sortable: false },
+]
 
 
 const closeAddTaskDialog=()=>{
@@ -39,7 +44,7 @@ const closeAddTaskDialog=()=>{
           <v-text-field class="mb-4 mr-4" hide-details="auto" label="Search" prepend-inner-icon="mdi-magnify"
             variant="outlined"></v-text-field>
 
-          <v-autocomplete label="Filter" class="mr-4" :items="data.filterItems" item-title="name"
+          <v-autocomplete label="Filter" class="mr-4" v-model="data.selectedFilter" :items="data.filterItems" item-title="name"
             item-value="id" variant="outlined"></v-autocomplete>
           <v-btn color="primary" class="rounded-xl" @click="data.dialog=true;">Create</v-btn>
         </div>
