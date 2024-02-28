@@ -32,7 +32,6 @@ onMounted(async()=>{
         await getItemData();
         data.preLoader=false;
     } catch(err){
-        console.log(err);
         data.preLoader=false;
         alert("Something went wrong")
     }
@@ -57,7 +56,6 @@ const getItemData=async()=>{
         closeDialog();
         alert("Document not found");
     } catch(err){
-        console.log(err);
         alert("Something went wrong");
     }
 
@@ -85,7 +83,6 @@ const submitForm = async () => {
         closeDialog();
         data.btnLoading=false;
     } catch(err){
-        console.log(err);
         data.btnLoading=false;
         alert("Something went wrong");
     }

@@ -54,7 +54,6 @@ const submitForm = async () => {
         closeDialog();
         data.btnLoading=false;
     } catch(err){
-        console.log(err);
         data.btnLoading=false;
         alert("Something went wrong");
     }
