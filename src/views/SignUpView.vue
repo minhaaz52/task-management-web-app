@@ -42,7 +42,7 @@ const submitForm = async () => {
         const userRef = doc(db, "users", uid);
         await setDoc(userRef, {
             email: data.email,
-            id: uid
+            uid: uid
         })
         data.signUpLoading = false;
         router.replace('/login')

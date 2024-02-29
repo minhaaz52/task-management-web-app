@@ -2,6 +2,11 @@
 import { ref, reactive, onMounted } from "vue"
 import { doc, setDoc, collection, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase"
+import { useStore } from "vuex"
+
+
+const store=useStore()
+
 
 const data = reactive({
     statusItems: [
@@ -15,7 +20,10 @@ const data = reactive({
     description: "",
     btnLoading: false,
     preLoader: true,
+    userDetails: store.state.userDetails,
 })
+
+
 
 const createTaskForm = ref(null)
 
@@ -43,7 +51,7 @@ const closeDialog = () => {
 
 const getItemData=async()=>{
     try{
-        const docRef=doc(db, "tasks", props.itemId);
+        const docRef=doc(db, "users", data.userDetails.uid, "tasks",  props.itemId);
         const docSnap=await getDoc(docRef);
 
         if (docSnap.exists()){
@@ -72,7 +80,7 @@ const submitForm = async () => {
         }
 
         const date=new Date();
-        const taskRef=doc(db, "tasks", props.itemId);
+        const taskRef=doc(db, "users", data.userDetails.uid, "tasks", props.itemId);
 
         await updateDoc(taskRef, {
             name: data.name,

@@ -1,8 +1,11 @@
 <script setup>
 import { reactive, onMounted, watch } from "vue"
+import { useStore } from "vuex"
 import { collection, onSnapshot, doc, deleteDoc, writeBatch } from "firebase/firestore";
-import { db } from "@/firebase"
+import { db, auth } from "@/firebase"
+import { onAuthStateChanged } from "firebase/auth"
 
+import AuthService from "@/controllers/AuthService";
 import CreateTask from "@/components/CreateTask.vue"
 import EditTask from "@/components/EditTask.vue"
 
@@ -22,9 +25,12 @@ const data = reactive({
   dialog: false,
   selectedItems: [],
   editDialog: false,
-  selectedItem:"",
+  selectedItem: "",
   deleteLoading: false,
+  userDetails: {},
 })
+
+const store = useStore();
 
 watch(
   () => data.search,
@@ -42,7 +48,7 @@ watch(
 
 const headers = [
   { title: 'Name', align: 'start', sortable: true, key: 'name' },
-  { title: 'Description', align: 'center', sortable: true, key: 'description', class:"description-column"},
+  { title: 'Description', align: 'center', sortable: true, key: 'description', class: "description-column" },
   { title: 'Status', align: 'center', sortable: true, key: 'status' },
   { title: 'Created On', align: 'center', sortable: true, key: 'createdOn' },
   { title: 'Updated On', align: 'center', sortable: true, key: 'updatedOn' },
@@ -50,7 +56,7 @@ const headers = [
 ]
 
 onMounted(async () => {
-  await getAllData();
+  await getUserDetails();
 })
 
 
@@ -58,27 +64,41 @@ const closeAddTaskDialog = () => {
   data.dialog = false;
 }
 
-const closeEditTaskDialog=()=>{
-  data.editDialog=false;
+const closeEditTaskDialog = () => {
+  data.editDialog = false;
 }
 
+const getUserDetails = async () => {
+  try{
+    onAuthStateChanged(auth, async(user) => {
+      if (user) {
+        store.commit("setUserDetails", user);
+        data.userDetails=store.state.userDetails;
+        await getAllData();
+      }
+    })
+  } catch(err){
+    alert(err);
+  }
+
+}
 
 const getFilteredData = () => {
-  try{
+  try {
     data.filterdItems.splice(0)
     for (const item of data.items) {
       if (item.name?.toLowerCase()?.includes(data.search) && (data.selectedFilter === 'All' || data.selectedFilter === item.status)) {
         data.filterdItems.push(item);
       }
     }
-  } catch(err){
+  } catch (err) {
     alert("Something went wrong")
   }
 }
 
 const getAllData = async () => {
-  try{
-    const tasksRef = collection(db, "tasks")
+  try {
+    const tasksRef = collection(db, "users", data.userDetails.uid, "tasks")
     onSnapshot(tasksRef, (querySnapshot) => {
       data.items.splice(0)
       querySnapshot.forEach((task) => {
@@ -87,68 +107,68 @@ const getAllData = async () => {
 
       getFilteredData();
     })
-  } catch(err){
+  } catch (err) {
     alert("Something went wrong")
   }
 }
 
 const deleteItems = async () => {
-  try{
-    data.deleteLoading=true;
+  try {
+    data.deleteLoading = true;
     const batch = writeBatch(db);
     for (const item of data.selectedItems) {
-      const docRef = doc(db, 'tasks', item);
+      const docRef = doc(db, "users", data.userDetails.uid, 'tasks', item);
       batch.delete(docRef);
     }
     await batch.commit();
-    data.deleteLoading=false;
-  } catch(err){
-    data.deleteLoading=false;
+    data.deleteLoading = false;
+  } catch (err) {
+    data.deleteLoading = false;
     alert("Something went wrong");
   }
 }
 
-const deleteSingleItem=async(id)=>{
-  try{
-    const docRef=doc(db, "tasks", id)
+const deleteSingleItem = async (id) => {
+  try {
+    const docRef = doc(db, "users", data.userDetails.uid, "tasks", id)
     await deleteDoc(docRef);
 
-  } catch(err){
+  } catch (err) {
     alert("Something went wrong");
   }
 }
 
-const editItem=(item)=>{
-  data.selectedItem=item.id
-  data.editDialog=true;
+const editItem = (item) => {
+  data.selectedItem = item.id
+  data.editDialog = true;
 }
 
 
 
-const getItemColor=(item)=>{
-  if (item.status==="Done")
+const getItemColor = (item) => {
+  if (item.status === "Done")
     return "green"
-  else if (item.status==="In Progress")
+  else if (item.status === "In Progress")
     return "orange"
   return "red"
 }
 
-const formatTime=(time)=>{
+const formatTime = (time) => {
   if (!time)
     return ""
 
-  const date=new Date(time);
+  const date = new Date(time);
   if (!date)
     return "";
 
-  const d=date.getDate().toString().padStart(2,"0")
-  const m=(date.getMonth()+1).toString().padStart(2, "0")
-  const y=date.getFullYear().toString().padStart(2,"0")
-  const h=date.getHours().toString().padStart(2, "0")
-  const mn=date.getMinutes().toString().padStart(2,"0")
-  const s=date.getSeconds().toString().padStart(2,"0")
+  const d = date.getDate().toString().padStart(2, "0")
+  const m = (date.getMonth() + 1).toString().padStart(2, "0")
+  const y = date.getFullYear().toString().padStart(2, "0")
+  const h = date.getHours().toString().padStart(2, "0")
+  const mn = date.getMinutes().toString().padStart(2, "0")
+  const s = date.getSeconds().toString().padStart(2, "0")
 
-  const temp=`${d}-${m}-${y} ${h}:${mn}:${s}`
+  const temp = `${d}-${m}-${y} ${h}:${mn}:${s}`
   return temp;
 }
 
@@ -166,7 +186,8 @@ const formatTime=(time)=>{
           <v-autocomplete label="Filter" class="mr-4" v-model="data.selectedFilter" :items="data.filterStatus"
             item-title="name" item-value="id" variant="outlined"></v-autocomplete>
 
-          <v-btn :loading="data.deleteLoading" class="rounded-xl mr-4"  color="primaryOnColor" variant="outlined" @click="deleteItems">Delete</v-btn>
+          <v-btn :loading="data.deleteLoading" class="rounded-xl mr-4" color="primaryOnColor" variant="outlined"
+            @click="deleteItems">Delete</v-btn>
           <v-btn color="primary" class="rounded-xl elevation-0" @click="data.dialog = true;">Create</v-btn>
 
         </div>

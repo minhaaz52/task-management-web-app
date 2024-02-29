@@ -2,6 +2,9 @@
 import { ref, reactive } from "vue"
 import { doc, setDoc, collection } from "firebase/firestore";
 import { db } from "@/firebase"
+import { useStore } from "vuex"
+
+const store=useStore();
 
 const data = reactive({
     statusItems: [
@@ -14,6 +17,7 @@ const data = reactive({
     name: "",
     description: "",
     btnLoading: false,
+    userDetails: store.state.userDetails,
 })
 
 const createTaskForm = ref(null)
@@ -41,7 +45,7 @@ const submitForm = async () => {
         }
 
         const date=new Date();
-        const taskRef=collection(db, "tasks");
+        const taskRef=collection(db, "users", data.userDetails.uid, "tasks");
         const docRef=doc(taskRef)
         await setDoc(docRef, {
             name: data.name,
