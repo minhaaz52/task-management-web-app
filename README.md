@@ -27,3 +27,11 @@ npm run dev
 ```sh
 npm run build
 ```
+
+### DB Structure
+For the db, firebase firestore is used.
+In the frontend, firestore CRUD APIs are used, 'setDoc', 'deleteDoc' and 'updateDoc'.
+For displaying the data, snapshots are used so that the data is always real time.
+
+Firebase email and password authentication is also used for authenticating user.
+Each user can see only their tasks and not others.
