@@ -35,3 +35,7 @@ For displaying the data, snapshots are used so that the data is always real time
 
 Firebase email and password authentication is also used for authenticating user.
 Each user can see only their tasks and not others.
+
+Search and filter functionality is also added so user can search by name of the task or filter them by their status.
+
+To set the project for your firebase db, please change the firebaseConfig of firebase in 'firebase.js' file.
