@@ -7,49 +7,49 @@ import { createUserWithEmailAndPassword } from "firebase/auth"
 import { doc, setDoc } from "firebase/firestore"
 
 const router = useRouter();
-const store=useStore();
+const store = useStore();
 
 
-const data=reactive({
+const data = reactive({
     email: "",
     password: "",
-    confirmPassword :"",
+    confirmPassword: "",
     signUpLoading: false,
 })
 
 const signupForm = ref(null);
 
-const emailRules=store.state.emailRules
-const passwordRules=store.state.passwordRules
-const confirmPasswordRules=[
-    v=> !!v || 'Confirm Password is required',
-    v => v===data.password || 'Password does not match'
+const emailRules = store.state.emailRules
+const passwordRules = store.state.passwordRules
+const confirmPasswordRules = [
+    v => !!v || 'Confirm Password is required',
+    v => v === data.password || 'Password does not match'
 ]
 
-const submitForm = async() => {
-    try{
-        data.signUpLoading=true;
-        const validate=await signupForm.value.validate();
-        if (!validate.valid){
-            data.signUpLoading=false;
+const submitForm = async () => {
+    try {
+        data.signUpLoading = true;
+        const validate = await signupForm.value.validate();
+        if (!validate.valid) {
+            data.signUpLoading = false;
             return;
         }
 
         const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password)
         console.log("userCredential :", userCredential)
-        const user=userCredential.user;
-        const uid=user.uid;
+        const user = userCredential.user;
+        const uid = user.uid;
 
-        const userRef=doc(db, "users", uid);
+        const userRef = doc(db, "users", uid);
         await setDoc(userRef, {
             email: data.email,
             id: uid
         })
-
-        data.signUpLoading=false;
+        data.signUpLoading = false;
         router.replace('/login')
-    } catch(err){
-        data.signUpLoading=false;
+        
+    } catch (err) {
+        data.signUpLoading = false;
         alert(err.message);
     }
 }
@@ -62,17 +62,18 @@ const submitForm = async() => {
             ref="signupForm">
             <v-card class="w-25">
                 <div class="w-100 pa-2">
-                    <v-text-field v-model="data.email" class="mb-4" hide-details="auto" label="Email address" variant="outlined"
-                        type="email" :rules="emailRules"></v-text-field>
+                    <v-text-field v-model="data.email" class="mb-4" hide-details="auto" label="Email address"
+                        variant="outlined" type="email" :rules="emailRules"></v-text-field>
 
-                    <v-text-field v-model="data.password" class="mb-2" hide-details="auto" label="Password" variant="outlined"
-                        type="password" :rules="passwordRules"></v-text-field>
+                    <v-text-field v-model="data.password" class="mb-2" hide-details="auto" label="Password"
+                        variant="outlined" type="password" :rules="passwordRules"></v-text-field>
 
-                    <v-text-field v-model="data.confirmPassword" class="mb-2" hide-details="auto" label="Confirm Password" variant="outlined"
-                        type="password" :rules="confirmPasswordRules"></v-text-field>
+                    <v-text-field v-model="data.confirmPassword" class="mb-2" hide-details="auto" label="Confirm Password"
+                        variant="outlined" type="password" :rules="confirmPasswordRules"></v-text-field>
                 </div>
                 <div class="w-100 px-2">
-                    <v-btn type="submit" :loading="data.signUpLoading" color="primary" class="elevation-0 w-100 pa-2 mb-4 rounded-xl">
+                    <v-btn type="submit" :loading="data.signUpLoading" color="primary"
+                        class="elevation-0 w-100 pa-2 mb-4 rounded-xl">
                         Sign Up
                     </v-btn>
 

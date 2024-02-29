@@ -7,7 +7,7 @@ const store = createStore({
       
       emailRules: [
         v => !!v || 'Email is required',
-        v => /^[a-z.-]+@[a-z.-]+\.[a-z]+$/i.test(v) || 'Please enter valid Email'
+        v => /^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/i.test(v) || 'Please enter valid Email'
       ],
 
       passwordRules: [
