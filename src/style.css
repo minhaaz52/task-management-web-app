@@ -4,3 +4,9 @@
     box-sizing: border-box;
   }
 
+  .description-column {
+    max-width: 50px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }

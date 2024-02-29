@@ -42,7 +42,7 @@ watch(
 
 const headers = [
   { title: 'Name', align: 'start', sortable: true, key: 'name' },
-  { title: 'Description', align: 'center', sortable: true, key: 'description' },
+  { title: 'Description', align: 'center', sortable: true, key: 'description', class:"description-column"},
   { title: 'Status', align: 'center', sortable: true, key: 'status' },
   { title: 'Created On', align: 'center', sortable: true, key: 'createdOn' },
   { title: 'Updated On', align: 'center', sortable: true, key: 'updatedOn' },
@@ -166,8 +166,8 @@ const formatTime=(time)=>{
           <v-autocomplete label="Filter" class="mr-4" v-model="data.selectedFilter" :items="data.filterStatus"
             item-title="name" item-value="id" variant="outlined"></v-autocomplete>
 
-          <v-btn color="primary" class="rounded-xl mr-4" @click="deleteItems">Delete</v-btn>
-          <v-btn color="primary" class="rounded-xl" @click="data.dialog = true;">Create</v-btn>
+          <v-btn :loading="data.deleteLoading" class="rounded-xl mr-4"  color="primaryOnColor" variant="outlined" @click="deleteItems">Delete</v-btn>
+          <v-btn color="primary" class="rounded-xl elevation-0" @click="data.dialog = true;">Create</v-btn>
 
         </div>
       </v-card>

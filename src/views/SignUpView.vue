@@ -13,7 +13,7 @@ const submitForm = () => {
 </script>
 
 <template>
-    <div class="w-100 h-100 d-flex align-center justify-center">
+    <div class="w-100 h-100 d-flex align-center justify-center bg-primary">
         <v-form class="d-flex flex-column justify-center align-center w-100 h-100 pa-2" @submit.prevent="submitForm"
             ref="signupForm">
             <v-card class="w-25">
@@ -24,11 +24,11 @@ const submitForm = () => {
                         type="email"></v-text-field>
                 </div>
                 <div class="w-100 px-2">
-                    <v-btn type="submit" variant="outlined" color="deep-purple-accent-4" class="w-100 pa-2 mb-4 rounded-xl">
+                    <v-btn type="submit" color="primary" class="elevation-0 w-100 pa-2 mb-4 rounded-xl">
                         Sign Up
                     </v-btn>
 
-                    <v-btn @click="router.push('/login')" variant="outlined" color="deep-purple-accent-4" class="w-100 mb-4 rounded-xl">
+                    <v-btn @click="router.push('/login')" variant="outlined" color="primaryOnColor" class="w-100 mb-4 rounded-xl">
                         Cancel
                     </v-btn>
                 </div>

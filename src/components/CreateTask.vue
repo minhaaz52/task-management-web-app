@@ -80,11 +80,11 @@ const submitForm = async () => {
                 item-title="name" item-value="id" :rules="statusRules" variant="outlined"></v-autocomplete>
 
             <div class="">
-                <v-btn :loading="data.btnLoading" type="submit" variant="outlined" color="deep-purple-accent-4" class="w-100 pa-2 mb-4 rounded-xl">
+                <v-btn :loading="data.btnLoading" type="submit" color="primary" class="elevation-0 w-100 pa-2 mb-4 rounded-xl">
                     Create
                 </v-btn>
 
-                <v-btn @click="closeDialog" variant="outlined" color="deep-purple-accent-4" class="w-100 mb-4 rounded-xl">
+                <v-btn @click="closeDialog" variant="outlined" color="primaryOnColor" class="w-100 mb-4 rounded-xl">
                     Cancel
                 </v-btn>
             </div>
