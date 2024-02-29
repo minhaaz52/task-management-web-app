@@ -21,7 +21,7 @@ const submitForm = () => {
                     <v-text-field class="mb-4" hide-details="auto" label="Email address" variant="outlined"
                         type="email"></v-text-field>
                     <v-text-field class="mb-2" hide-details="auto" label="Password" variant="outlined"
-                        type="email"></v-text-field>
+                        type="password"></v-text-field>
                 </div>
                 <div class="w-100 px-2">
                     <v-btn type="submit" color="primary" class="elevation-0 w-100 pa-2 mb-4 rounded-xl">
