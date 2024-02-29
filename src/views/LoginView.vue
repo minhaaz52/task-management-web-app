@@ -33,8 +33,6 @@ const submitForm = async() => {
         const user=userCredential.user;
 
         store.commit("setUserDetails", user);
-
-        console.log("user :", store.state.userDetails);
         data.loginLoading=false;
         router.replace('/')
     } catch(err){

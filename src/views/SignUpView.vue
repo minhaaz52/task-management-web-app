@@ -36,7 +36,6 @@ const submitForm = async () => {
         }
 
         const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password)
-        console.log("userCredential :", userCredential)
         const user = userCredential.user;
         const uid = user.uid;
 
@@ -47,7 +46,7 @@ const submitForm = async () => {
         })
         data.signUpLoading = false;
         router.replace('/login')
-        
+
     } catch (err) {
         data.signUpLoading = false;
         alert(err.message);
