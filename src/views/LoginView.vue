@@ -3,7 +3,7 @@ import { ref, reactive } from "vue";
 import { useRouter } from "vue-router"
 import { useStore } from "vuex"
 import { signInWithEmailAndPassword } from "firebase/auth"
-import { db, auth } from "@/firebase"
+import { auth } from "@/firebase"
 
 
 const router = useRouter();

@@ -5,7 +5,6 @@ import { collection, onSnapshot, doc, deleteDoc, writeBatch } from "firebase/fir
 import { db, auth } from "@/firebase"
 import { onAuthStateChanged } from "firebase/auth"
 
-import AuthService from "@/controllers/AuthService";
 import CreateTask from "@/components/CreateTask.vue"
 import EditTask from "@/components/EditTask.vue"
 
@@ -28,6 +27,7 @@ const data = reactive({
   selectedItem: "",
   deleteLoading: false,
   userDetails: {},
+  tableLoading: true,
 })
 
 const store = useStore();
@@ -70,14 +70,17 @@ const closeEditTaskDialog = () => {
 
 const getUserDetails = async () => {
   try{
+    data.tableLoading=true;
     onAuthStateChanged(auth, async(user) => {
       if (user) {
         store.commit("setUserDetails", user);
         data.userDetails=store.state.userDetails;
         await getAllData();
+        data.tableLoading=false;
       }
     })
   } catch(err){
+    data.tableLoading=false;
     alert(err);
   }
 
@@ -85,29 +88,35 @@ const getUserDetails = async () => {
 
 const getFilteredData = () => {
   try {
+    data.tableLoading=true;
     data.filterdItems.splice(0)
     for (const item of data.items) {
       if (item.name?.toLowerCase()?.includes(data.search) && (data.selectedFilter === 'All' || data.selectedFilter === item.status)) {
         data.filterdItems.push(item);
       }
     }
+    data.tableLoading=false;
   } catch (err) {
+    data.tableLoading=false;
     alert("Something went wrong")
   }
 }
 
 const getAllData = async () => {
   try {
+    data.tableLoading=true;
     const tasksRef = collection(db, "users", data.userDetails.uid, "tasks")
     onSnapshot(tasksRef, (querySnapshot) => {
       data.items.splice(0)
+      data.tableLoading=true;
       querySnapshot.forEach((task) => {
         data.items.push(task.data());
       })
-
       getFilteredData();
+      data.tableLoading=false;
     })
   } catch (err) {
+    data.tableLoading=false;
     alert("Something went wrong")
   }
 }
@@ -194,7 +203,7 @@ const formatTime = (time) => {
       </v-card>
 
       <v-card>
-        <v-data-table v-model="data.selectedItems" :headers="headers" :items="data.filterdItems" show-select>
+        <v-data-table :loading="data.tableLoading" v-model="data.selectedItems" :headers="headers" :items="data.filterdItems" show-select>
 
           <template v-slot:item.actions="{ item }">
             <v-icon size="large" class="me-2" @click="editItem(item)">

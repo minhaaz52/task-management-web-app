@@ -10,7 +10,6 @@ export default {
                 if (user) {
                     store.commit("setUserDetails", user);
                 } else {
-                    console.log('user logged out')
                     router.replace("/login")
                 }
             })

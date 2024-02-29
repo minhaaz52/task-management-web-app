@@ -1,6 +1,6 @@
 <script setup>
 import { ref, reactive, onMounted } from "vue"
-import { doc, setDoc, collection, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase"
 import { useStore } from "vuex"
 

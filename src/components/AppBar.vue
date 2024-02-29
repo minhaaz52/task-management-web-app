@@ -2,8 +2,6 @@
 import { reactive, onMounted } from "vue"
 import { useStore } from "vuex"
 import { useRouter } from "vue-router"
-import { onAuthStateChanged, signOut } from "firebase/auth"
-import { auth } from "@/firebase"
 import AuthService from "@/controllers/AuthService"
 
 const data = reactive({
@@ -32,7 +30,7 @@ const logout = async () => {
         <v-app-bar-title>To Do App</v-app-bar-title>
 
         <template v-slot:append>
-            <h4 class="font-weight-medium">{{ data.userDetails.email }}</h4>
+            <h4 class="font-weight-medium">{{ store.state.userDetails.email }}</h4>
             <v-menu>
                 <template v-slot:activator="{ props }">
                     <v-btn icon="mdi-dots-vertical" v-bind="props"></v-btn>
